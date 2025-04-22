@@ -13,6 +13,11 @@ A modular validation tool for Quaver map editors. Helps identify common issues f
 - 🚫 **Overlap & Duplicate Detection**  
   Automatically detects overlapping or duplicated notes in the same column.
 
+- 🟩 **Mapped Activity Check**  
+  Ensures that at least 75% of the song has mapped content, discounting long pauses.
+
+- 🧩 **All Lanes Must Be Used**  
+  Validates that each required column contains at least one note. Warns if 7K lanes are missing.
 ---
 
 ## 🚀 Download & How to Use

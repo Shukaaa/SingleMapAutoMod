@@ -154,6 +154,35 @@ registerValidator(function(diff)
     return issues
 end)
 
+registerValidator(function(diff)
+    local issues = {}
+    local lanesUsed = {}
+
+    for _, obj in ipairs(map.HitObjects or {}) do
+        lanesUsed[obj.Lane] = true
+    end
+
+    for lane = 1, 4 do
+        if not lanesUsed[lane] then
+            table.insert(issues, {
+                message = string.format("No notes placed in required column %d", lane),
+                level = LOG_LEVEL.UNRANKABLE
+            })
+        end
+    end
+
+    for lane = 5, 7 do
+        if not lanesUsed[lane] then
+            table.insert(issues, {
+                message = string.format("Column %d is unused. If this is a 7K map, consider placing notes here. Ohterwise it's unrankable", lane),
+                level = LOG_LEVEL.WARNING
+            })
+        end
+    end
+
+    return issues
+end)
+
 function draw()
     imgui.Begin("Single Map AutoMod")
 

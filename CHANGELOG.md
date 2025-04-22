@@ -1,5 +1,6 @@
 # 1.0.0
 
+- Added Validation for "All lanes must be used" rule
 - Added Validation for overlapping and duplicated notes
 - Added Validation for "mapped activity" percentage >75%
 - "Go To" Navigation
