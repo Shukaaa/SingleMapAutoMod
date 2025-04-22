@@ -21,6 +21,9 @@ A modular validation tool for Quaver map editors. Helps identify common issues f
 
 - 🕑 **Song must be <45s**  
   Ensures that the chosen song is at least 45 seconds long.
+
+- 🕑 **Warning when breaktime is >20s & Error when breaktime is > 30s**  
+  Add warnings and errors for too long break times.
 ---
 
 ## 🚀 Download & How to Use

@@ -25,6 +25,18 @@ local standardDiffNames = {
 local selectedDiff = state.GetValue("selectedDiff") or "None"
 local lastResults = state.GetValue("validationResults") or {}
 
+function getAllMappedTimes()
+    local activeTimes = {}
+
+    for _, obj in ipairs(map.HitObjects) do
+        table.insert(activeTimes, obj.StartTime)
+        table.insert(activeTimes, obj.EndTime and obj.EndTime or obj.StartTime)
+    end
+
+    table.sort(activeTimes)
+    return activeTimes
+end
+
 function registerValidator(func)
     table.insert(validators, func)
 end
@@ -103,15 +115,8 @@ registerValidator(function(diff)
     end
 
     local songLength = map.TrackLength
-    local activeTimes = {}
+    local activeTimes = getAllMappedTimes()
     local pauseThreshold = 3000
-
-    for _, obj in ipairs(map.HitObjects) do
-        table.insert(activeTimes, obj.StartTime)
-        table.insert(activeTimes, obj.EndTime and obj.EndTime or obj.StartTime)
-    end
-
-    table.sort(activeTimes)
 
     local uniqueTimes = {}
     local lastSeen = nil
@@ -194,6 +199,38 @@ registerValidator(function(diff)
             message = string.format("Map sound is too short: %.2fs (minimum is 45s)", trackLength / 1000),
             level = LOG_LEVEL.UNRANKABLE
         })
+    end
+
+    return issues
+end)
+
+registerValidator(function(diff)
+    local issues = {}
+    local mappedTimes = getAllMappedTimes()
+    local breakUnrankableThreshold = 30000
+    local breakWarningThreshold = 20000
+
+    if #mappedTimes < 2 then return issues end
+
+    local last = mappedTimes[1]
+
+    for i = 2, #mappedTimes do
+        local current = mappedTimes[i]
+        local gap = current - last
+
+        if gap >= breakUnrankableThreshold then
+            table.insert(issues, {
+                message = string.format("Break too long: %.2fs gap between %dms and %dms", gap / 1000, last, current),
+                level = LOG_LEVEL.UNRANKABLE,
+            })
+        elseif gap >= breakWarningThreshold and gap < breakUnrankableThreshold then
+            table.insert(issues, {
+                message = string.format("Break is very long: %.2fs gap between %dms and %dms", gap / 1000, last, current),
+                level = LOG_LEVEL.WARNING,
+            })
+        end
+
+        last = current
     end
 
     return issues
