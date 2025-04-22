@@ -174,10 +174,26 @@ registerValidator(function(diff)
     for lane = 5, 7 do
         if not lanesUsed[lane] then
             table.insert(issues, {
-                message = string.format("Column %d is unused. If this is a 7K map, consider placing notes here. Ohterwise it's unrankable", lane),
+                message = string.format("Column %d is unused. If this is a 7K map, consider placing notes here. Otherwise it's unrankable.", lane),
                 level = LOG_LEVEL.WARNING
             })
         end
+    end
+
+    return issues
+end)
+
+registerValidator(function(diff)
+    local issues = {}
+
+    local minLengthMs = 45000
+    local trackLength = map.TrackLength or 0
+
+    if trackLength < minLengthMs then
+        table.insert(issues, {
+            message = string.format("Map sound is too short: %.2fs (minimum is 45s)", trackLength / 1000),
+            level = LOG_LEVEL.UNRANKABLE
+        })
     end
 
     return issues

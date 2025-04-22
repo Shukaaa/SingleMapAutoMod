@@ -18,6 +18,9 @@ A modular validation tool for Quaver map editors. Helps identify common issues f
 
 - 🧩 **All Lanes Must Be Used**  
   Validates that each required column contains at least one note. Warns if 7K lanes are missing.
+
+- 🕑 **Song must be <45s**  
+  Ensures that the chosen song is at least 45 seconds long.
 ---
 
 ## 🚀 Download & How to Use
